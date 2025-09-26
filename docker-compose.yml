@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  station-energy-management:
+    container_name: station-energy-management
+    image: energy-management-system:1.0.0
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - STATION_ID=ELECTRA_PARIS_15
+      - GRID_CAPACITY=400
+      - BATTERY_ENABLED=true
+    volumes:
+      - ./logs:/app/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/v1/station/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+    
